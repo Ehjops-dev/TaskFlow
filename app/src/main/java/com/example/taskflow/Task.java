@@ -4,20 +4,20 @@ public class Task {
 
     private String title;
     private String priority;
-    private boolean isDone;
-    private long id;
+    private boolean isCompleted;
+    private final long id;
 
     public Task(String title, String priority) {
         this.title = title;
         this.priority = priority;
-        this.isDone = false;
+        this.isCompleted = false;
         this.id = System.currentTimeMillis();
     }
 
-    public Task(String title, String priority, boolean isDone, long id) {
+    public Task(String title, String priority, boolean isCompleted, long id) {
         this.title = title;
         this.priority = priority;
-        this.isDone = isDone;
+        this.isCompleted = isCompleted;
         this.id = id;
     }
 
@@ -29,8 +29,8 @@ public class Task {
         return priority;
     }
 
-    public boolean isDone() {
-        return isDone;
+    public boolean isCompleted() {
+        return isCompleted;
     }
 
     public long getId() {
@@ -45,7 +45,7 @@ public class Task {
         this.priority = priority;
     }
 
-    public void setDone(boolean done) {
-        isDone = done;
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }
