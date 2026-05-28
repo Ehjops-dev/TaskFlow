@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#1E1E1E">
+
+    <!-- Dialog Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Task"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="14dp"/>
+
+    <!-- Task Input -->
+    <EditText
+        android:id="@+id/dialogTaskInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter task..."
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B0B0B0"
+        android:padding="12dp"
+        android:backgroundTint="#3B82F6"
+        android:inputType="text"/>
+
+    <!-- Priority Label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Priority"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"/>
+
+    <!-- Spinner -->
+    <Spinner
+        android:id="@+id/prioritySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"/>
+</LinearLayout>

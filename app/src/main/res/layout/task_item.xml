@@ -13,14 +13,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/taskTitle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Task"
-        android:textSize="16sp"
-        android:textColor="#111827"
-        android:textStyle="bold"
-        android:paddingStart="10dp"/>
+        android:orientation="vertical"
+        android:paddingStart="10dp">
+
+        <TextView
+            android:id="@+id/taskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#111827"/>
+
+        <TextView
+            android:id="@+id/taskPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/deleteButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:tint="#DC2626"/>
 </LinearLayout>
