@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  values/strings.xml
+  TEAM MEMBER: assign to Member A
+
+  Added strings for the new reminder & type features.
+-->
+<resources>
+    <string name="app_name">TaskFlow</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="tasks_remaining">%d tasks remaining</string>
+    <string name="empty_state">Your task list is empty\nTap + to add a task</string>
+    <string name="new_task">New Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="enter_task">Enter task…</string>
+    <string name="priority">Priority</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="check_task">Mark task as done</string>
+    <string name="delete_task">Delete task</string>
+    <string name="placeholder_task">Task</string>
+    <string name="placeholder_priority">Priority</string>
+    <string name="toggle_theme">Toggle Theme</string>
+    <string name="add_task">Add Task</string>
+    <string name="app_branding">TASK FLOW</string>
+
+    <!-- New strings for reminder feature -->
+    <string name="task_type">Task Type</string>
+    <string name="type_daily">🔁 Daily</string>
+    <string name="type_one_time">📅 One-Time</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="event_date">Event Date</string>
+    <string name="card_colour">Card Colour</string>
+    <string name="notification_channel_desc">Daily and one-time task reminders from TaskFlow</string>
+</resources>

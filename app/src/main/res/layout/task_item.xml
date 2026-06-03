@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  task_item.xml  —  Single task card
+  TEAM MEMBER: assign to Member C  (same as TaskAdapter.java)
+
+  New views added vs original:
+    • taskTypeBadge    — shows "🔁 Daily" or "📅 One-Time"
+    • taskReminderTime — shows "⏰ HH:mm"
+    • taskEventDate    — shows "📆 yyyy-MM-dd" (one-time only)
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/taskCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E5E7EB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Coloured left strip (driven by task.getColor()) -->
+        <View
+            android:id="@+id/priorityIndicator"
+            android:layout_width="8dp"
+            android:layout_height="match_parent"
+            android:background="#6366F1"/>
+
+        <!-- Content area -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="14dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/taskCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="#6366F1"
+                android:contentDescription="@string/check_task"/>
+
+            <!-- Text block -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <!-- Task title -->
+                <TextView
+                    android:id="@+id/taskTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/placeholder_task"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#111827"/>
+
+                <!-- Priority label -->
+                <TextView
+                    android:id="@+id/taskPriority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/placeholder_priority"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textColor="#6B7280"/>
+
+                <!-- Type badge (Daily / One-Time) -->
+                <TextView
+                    android:id="@+id/taskTypeBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔁 Daily"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="#6366F1"/>
+
+                <!-- Reminder time -->
+                <TextView
+                    android:id="@+id/taskReminderTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⏰ 08:00"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#6B7280"
+                    android:visibility="gone"/>
+
+                <!-- Event date (one-time only) -->
+                <TextView
+                    android:id="@+id/taskEventDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📆 2025-01-01"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#6B7280"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <!-- Delete icon -->
+            <ImageView
+                android:id="@+id/deleteButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="#EF4444"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/delete_task"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

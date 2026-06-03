@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  dialog_add_task.xml  —  Add / Edit task dialog
+  TEAM MEMBER: assign to Member C
+
+  New fields vs original:
+    • taskTypeGroup    — RadioGroup: Daily / One-Time
+    • reminderTimePicker — TimePicker (24-hour)
+    • eventDateLayout  — only visible when One-Time is selected
+    • eventDateInput   — EditText for yyyy-MM-dd date
+    • colorSpinner     — colour palette picker
+-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/dialogRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- ── Title ────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_task"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- ── Task title input ──────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialogInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_task"
+            app:boxStrokeColor="#3B82F6"
+            app:hintTextColor="#3B82F6">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialogTaskInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:maxLines="2"
+                android:importantForAutofill="no"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Priority ──────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/priorityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/priority"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="6dp"/>
+
+        <FrameLayout
+            android:id="@+id/spinnerWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/task_card_bg"
+            android:padding="4dp">
+
+            <Spinner
+                android:id="@+id/prioritySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:spinnerMode="dropdown"/>
+        </FrameLayout>
+
+        <!-- ── Colour picker ─────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Card Colour"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="6dp"
+            android:textColor="#6B7280"/>
+
+        <Spinner
+            android:id="@+id/colorSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:spinnerMode="dropdown"/>
+
+        <!-- ── Task type ──────────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task Type"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="6dp"
+            android:textColor="#6B7280"/>
+
+        <RadioGroup
+            android:id="@+id/taskTypeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbDaily"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="🔁  Daily"
+                android:buttonTint="#6366F1"
+                android:textColor="#111827"/>
+
+            <RadioButton
+                android:id="@+id/rbOneTime"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="📅  One-Time"
+                android:buttonTint="#0EA5E9"
+                android:textColor="#111827"/>
+        </RadioGroup>
+
+        <!-- ── Event date (one-time only) ────────────────────── -->
+        <LinearLayout
+            android:id="@+id/eventDateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Date (yyyy-MM-dd)"
+                android:textSize="13sp"
+                android:textColor="#6B7280"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="#0EA5E9">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventDateInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 2025-12-31"
+                    android:inputType="date"
+                    android:importantForAutofill="no"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- ── Reminder time ─────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏰  Reminder Time"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="#6B7280"/>
+
+        <TimePicker
+            android:id="@+id/reminderTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
+
+    </LinearLayout>
+</ScrollView>
