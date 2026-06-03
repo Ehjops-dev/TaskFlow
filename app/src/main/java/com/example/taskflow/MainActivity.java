@@ -359,6 +359,8 @@ public class MainActivity extends AppCompatActivity {
         TextView labelTv       = view.findViewById(R.id.priorityLabel);
         TextInputLayout layout = view.findViewById(R.id.dialogInputLayout);
         EditText input         = view.findViewById(R.id.dialogTaskInput);
+        View spinnerWrapper    = view.findViewById(R.id.spinnerWrapper);
+        RadioGroup typeGroup   = view.findViewById(R.id.taskTypeGroup);
 
         if (isDark) {
             root.setBackgroundColor(0xFF1E1E1E);
@@ -366,12 +368,26 @@ public class MainActivity extends AppCompatActivity {
             labelTv.setTextColor(0xFFCCCCCC);
             input.setTextColor(0xFFFFFFFF);
             layout.setBoxStrokeColor(0xFF3B82F6);
+            if (spinnerWrapper != null) {
+                spinnerWrapper.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFF333333));
+            }
+            if (typeGroup != null) {
+                for (int i = 0; i < typeGroup.getChildCount(); i++) {
+                    View child = typeGroup.getChildAt(i);
+                    if (child instanceof android.widget.RadioButton) {
+                        ((android.widget.RadioButton) child).setTextColor(0xFFFFFFFF);
+                    }
+                }
+            }
         } else {
             root.setBackgroundColor(0xFFFFFFFF);
             titleTv.setTextColor(0xFF111827);
             labelTv.setTextColor(0xFF6B7280);
             input.setTextColor(0xFF111827);
             layout.setBoxStrokeColor(0xFF3B82F6);
+            if (spinnerWrapper != null) {
+                spinnerWrapper.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFF9FAFB));
+            }
         }
     }
 

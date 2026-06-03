@@ -133,7 +133,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
             taskList.get(pos).setCompleted(isChecked);
-            taskList.sort((t1, t2) -> Boolean.compare(t1.isCompleted(), t2.isCompleted()));
+
+            // Match MainActivity's dual-sorting logic
+            taskList.sort((t1, t2) -> {
+                int comp = Boolean.compare(t1.isCompleted(), t2.isCompleted());
+                if (comp != 0) return comp;
+
+                // Helper to get priority value for sorting
+                int p1 = getPrioritySortValue(t1.getPriority());
+                int p2 = getPrioritySortValue(t2.getPriority());
+                return Integer.compare(p1, p2);
+            });
+
             notifyDataSetChanged();
             listener.onTaskChanged();
         });
@@ -157,6 +168,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
             return true;
         });
+    }
+
+    private int getPrioritySortValue(String p) {
+        switch (p) {
+            case "High":   return 1;
+            case "Medium": return 2;
+            case "Low":    return 3;
+            default:       return 4;
+        }
     }
 
     public void setDarkMode(boolean darkMode) {
