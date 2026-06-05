@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -38,6 +39,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -73,10 +76,14 @@ public class MainActivity extends AppCompatActivity {
     TextView                emptyState;
     TextView                titleText;
     ImageButton             themeToggle;
+    ViewGroup               filterLayout;
+    Chip                    chipAll, chipActive, chipDone, chipHigh;
 
     boolean isDark = false;
+    String currentFilter = "All";
 
-    ArrayList<Task> taskList = new ArrayList<>();
+    ArrayList<Task> allTasks = new ArrayList<>();
+    ArrayList<Task> displayedTasks = new ArrayList<>();
     TaskAdapter     adapter;
 
     // ── Lifecycle ─────────────────────────────────────────────
@@ -92,18 +99,53 @@ public class MainActivity extends AppCompatActivity {
         emptyState   = findViewById(R.id.emptyState);
         titleText    = findViewById(R.id.titleText);
         themeToggle  = findViewById(R.id.themeToggle);
+        filterLayout = findViewById(R.id.filterLayout);
+        chipAll      = findViewById(R.id.chipAll);
+        chipActive   = findViewById(R.id.chipActive);
+        chipDone     = findViewById(R.id.chipDone);
+        chipHigh     = findViewById(R.id.chipHigh);
 
-        adapter = new TaskAdapter(taskList, new TaskAdapter.OnTaskActionListener() {
+        adapter = new TaskAdapter(displayedTasks, new TaskAdapter.OnTaskActionListener() {
             @Override public void onEdit(Task task, int position) { showEditDialog(task); }
-            @Override public void onTaskChanged() { sortTasks(); updateUI(); saveTasks(); }
+            @Override public void onDelete(Task task) {
+                ReminderScheduler.cancel(MainActivity.this, task);
+                allTasks.remove(task);
+                applyFilter(currentFilter);
+                saveTasks();
+            }
+            @Override public void onTaskChanged() { 
+                // When a task changes (e.g. checked), we might need to re-filter
+                applyFilter(currentFilter);
+                saveTasks(); 
+            }
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         loadTasks();
+        applyFilter("All");
         applyTheme();
         updateUI();
+
+        View.OnClickListener filterListener = v -> {
+            chipAll.setChecked(v.getId() == R.id.chipAll);
+            chipActive.setChecked(v.getId() == R.id.chipActive);
+            chipDone.setChecked(v.getId() == R.id.chipDone);
+            chipHigh.setChecked(v.getId() == R.id.chipHigh);
+
+            if (v.getId() == R.id.chipAll) currentFilter = "All";
+            else if (v.getId() == R.id.chipActive) currentFilter = "Active";
+            else if (v.getId() == R.id.chipDone) currentFilter = "Done";
+            else if (v.getId() == R.id.chipHigh) currentFilter = "High";
+            
+            applyFilter(currentFilter);
+        };
+
+        chipAll.setOnClickListener(filterListener);
+        chipActive.setOnClickListener(filterListener);
+        chipDone.setOnClickListener(filterListener);
+        chipHigh.setOnClickListener(filterListener);
 
         fabAdd.setOnClickListener(v -> showAddDialog());
 
@@ -117,10 +159,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override public void onSwiped(RecyclerView.ViewHolder vh, int dir) {
                     int pos = vh.getBindingAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
-                        ReminderScheduler.cancel(MainActivity.this, taskList.get(pos));
-                        taskList.remove(pos);
-                        adapter.notifyItemRemoved(pos);
-                        updateUI();
+                        Task taskToRemove = displayedTasks.get(pos);
+                        ReminderScheduler.cancel(MainActivity.this, taskToRemove);
+                        allTasks.remove(taskToRemove);
+                        applyFilter(currentFilter);
                         saveTasks();
                     }
                 }
@@ -151,6 +193,30 @@ public class MainActivity extends AppCompatActivity {
     private void applyTheme() {
         adapter.setDarkMode(isDark);
         View mainLayout = findViewById(R.id.mainLayout);
+
+        // Define colors for chips
+        int chipSelectedBg = 0xFF2563EB; // Primary Blue
+        int chipSelectedText = 0xFFFFFFFF;
+        int chipUnselectedBg = isDark ? 0xFF333333 : 0xFFF3F4F6;
+        int chipUnselectedText = isDark ? 0xFFFFFFFF : 0xFF111827;
+
+        int[][] states = new int[][] {
+            new int[] {android.R.attr.state_checked},
+            new int[] {}
+        };
+
+        android.content.res.ColorStateList bgColors = new android.content.res.ColorStateList(states,
+                new int[] {chipSelectedBg, chipUnselectedBg});
+        android.content.res.ColorStateList textColors = new android.content.res.ColorStateList(states,
+                new int[] {chipSelectedText, chipUnselectedText});
+
+        Chip[] chips = {chipAll, chipActive, chipDone, chipHigh};
+        for (Chip chip : chips) {
+            chip.setChipBackgroundColor(bgColors);
+            chip.setTextColor(textColors);
+            chip.setChipStrokeWidth(0); // Cleaner segmented look
+        }
+
         if (isDark) {
             mainLayout.setBackgroundColor(0xFF121212);
             titleText.setTextColor(0xFFFFFFFF);
@@ -224,10 +290,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!title.isEmpty()) {
                     Task task = new Task(title, priority, false,
                             System.currentTimeMillis(), type, reminder, date, color);
-                    taskList.add(task);
+                    allTasks.add(task);
                     ReminderScheduler.schedule(this, task);
-                    sortTasks();
-                    updateUI();
+                    applyFilter(currentFilter);
                     saveTasks();
                 }
             })
@@ -306,8 +371,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Schedule new alarm
                 ReminderScheduler.schedule(this, task);
-                sortTasks();
-                updateUI();
+                applyFilter(currentFilter);
                 saveTasks();
             })
             .setNegativeButton(R.string.cancel, null)
@@ -391,10 +455,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ── Sort & UI ─────────────────────────────────────────────
+    // ── Filter & Sort & UI ─────────────────────────────────────
+
+    private void applyFilter(String filter) {
+        currentFilter = filter;
+        displayedTasks.clear();
+
+        for (Task t : allTasks) {
+            switch (filter) {
+                case "Active":
+                    if (!t.isCompleted()) displayedTasks.add(t);
+                    break;
+                case "Done":
+                    if (t.isCompleted()) displayedTasks.add(t);
+                    break;
+                case "High":
+                    if ("High".equalsIgnoreCase(t.getPriority())) displayedTasks.add(t);
+                    break;
+                case "All":
+                default:
+                    displayedTasks.add(t);
+                    break;
+            }
+        }
+        sortTasks();
+        updateUI();
+    }
 
     private void sortTasks() {
-        taskList.sort((t1, t2) -> {
+        displayedTasks.sort((t1, t2) -> {
             int comp = Boolean.compare(t1.isCompleted(), t2.isCompleted());
             if (comp != 0) return comp;
             return Integer.compare(getPriorityValue(t1.getPriority()),
@@ -414,12 +503,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         int remaining = 0;
-        for (Task t : taskList) if (!t.isCompleted()) remaining++;
+        for (Task t : allTasks) if (!t.isCompleted()) remaining++;
         taskCounter.setText(getString(R.string.tasks_remaining, remaining));
 
-        if (taskList.isEmpty()) {
+        if (displayedTasks.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
+            if (allTasks.isEmpty()) {
+                emptyState.setText(R.string.empty_state);
+            } else {
+                emptyState.setText("No tasks match this filter");
+            }
         } else {
             emptyState.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -431,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveTasks() {
         SharedPreferences prefs = getSharedPreferences("TaskPrefs", MODE_PRIVATE);
         JSONArray array = new JSONArray();
-        for (Task task : taskList) {
+        for (Task task : allTasks) {
             try {
                 JSONObject obj = new JSONObject();
                 obj.put("title",        task.getTitle());
@@ -454,12 +548,12 @@ public class MainActivity extends AppCompatActivity {
         String tasksJson = prefs.getString("tasks", null);
         if (tasksJson == null) return;
 
-        taskList.clear();
+        allTasks.clear();
         try {
             JSONArray array = new JSONArray(tasksJson);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
-                taskList.add(new Task(
+                allTasks.add(new Task(
                     obj.getString("title"),
                     obj.getString("priority"),
                     obj.optBoolean("isCompleted", obj.optBoolean("isDone")),
@@ -471,6 +565,6 @@ public class MainActivity extends AppCompatActivity {
                 ));
             }
         } catch (JSONException e) { e.printStackTrace(); }
-        adapter.notifyDataSetChanged();
+        // applyFilter will handle adapter notification
     }
 }

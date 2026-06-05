@@ -29,6 +29,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public interface OnTaskActionListener {
         void onEdit(Task task, int position);
+        void onDelete(Task task);
         void onTaskChanged();
     }
 
@@ -133,19 +134,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
             taskList.get(pos).setCompleted(isChecked);
-
-            // Match MainActivity's dual-sorting logic
-            taskList.sort((t1, t2) -> {
-                int comp = Boolean.compare(t1.isCompleted(), t2.isCompleted());
-                if (comp != 0) return comp;
-
-                // Helper to get priority value for sorting
-                int p1 = getPrioritySortValue(t1.getPriority());
-                int p2 = getPrioritySortValue(t2.getPriority());
-                return Integer.compare(p1, p2);
-            });
-
-            notifyDataSetChanged();
             listener.onTaskChanged();
         });
 
@@ -153,11 +141,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.deleteButton.setOnClickListener(v -> {
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
-            // Cancel alarm before removing
-            ReminderScheduler.cancel(v.getContext(), taskList.get(pos));
-            taskList.remove(pos);
-            notifyItemRemoved(pos);
-            listener.onTaskChanged();
+            listener.onDelete(taskList.get(pos));
         });
 
         // ── Long-press to edit ────────────────────────────────
